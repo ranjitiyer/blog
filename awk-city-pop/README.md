@@ -2,7 +2,7 @@ We are using csv data about the top 1000 US cities with the largest population r
 
 1. The simplest command in awk is to print the file
 
-```
+```bash
 => awk '{print}' < 1000-cities.txt | more
 
 1,New York,New York,8405837,4.8%
@@ -13,11 +13,12 @@ We are using csv data about the top 1000 US cities with the largest population r
 6,Phoenix,Arizona,1513367,14.0%
 7,San Antonio,Texas,1409019,21.0%
 . . .
+
 ```
 
 2. AWK assumes a tabular data model and takes in overrides for field separator. While each line is read, individual columns are accessible through internal variables. For example $1 refers to data in the first column of the current line and on so. In this example, we use the fact that city names appears in column 2 of the csv file and print it.
 
-```
+```bash
 => awk '{FS=","} {print $2}' < 1000-cities.txt | more
 York,New
 Los Angeles
@@ -31,7 +32,7 @@ San Diego
 
 3. We can then group the top 1000 cities by state and get a sense of which states have more populous cities. Here use print the state name which is in column 3, hence $3
 
-```
+```bash
 => cat 1000-cities.txt | awk '{FS=","} {print $3}' | sort | uniq -c | sort -k 2n
    . . .
    . . .
@@ -62,7 +63,7 @@ Unsurprisingly California being the largest state geographically and overall pop
 
 4. We then use AWK's regular expression support to filter some data and print only top cities in Florida
 
-```
+```bash
 => awk '/Florida/ {print}' < 1000-cities.txt
 13,Jacksonville,Florida,842583,14.3%
 44,Miami,Florida,417650,14.9%
@@ -87,21 +88,21 @@ Unsurprisingly California being the largest state geographically and overall pop
 
 5. AWK supports math operations and C-like syntax that we can use for calculating the total US population in the top 1000 cities. Variable initialization is optional but shown here in case the default value must be non-zero
 
-```
+```bash
 => awk 'BEGIN {FS=","; total=0} {total+=$4} END {print "Total population in 1000 top cities " total} ' < 1000-cities.txt
 Total population in 1000 top cities 131132443
 ```
 
 6. If we wanted to know the total population of all cities in California we would need a filter to limit our analysis to cities in Calfornia and then do a sum over populations in CA.
 
-```
+```bash
 => awk 'BEGIN {FS=","; total=0} /California/ {total+=$4} END {print "Total population in top CA cities " total} ' < 1000-cities.txt
 Total population in top CA cities 27910620
 ```
 
 7. We can also calculate total population grouped by state by using AWK's support for associative arrays. `OFS` is a builtin AWK variable to set a separator when printing multiple values in the output
 
-```
+```bash
 # Total population per state of the top 1000 cities
 cat 1000-cities.txt | awk 'BEGIN {FS=","; OFS="|"} {cities[$3]+=$4} END {for (i in cities) {print i,cities[i]}}' | sort -t\| -k 2n
 
@@ -161,7 +162,7 @@ California|27910620
 
 8. As the last example, we can classify populations in ranges.
 
-```
+```bash
 # Bucketize city populations
 
 => awk 'BEGIN {FS=","; OFS="|"; _1m=0; _500k=0; _250k=0; _100k=0; _50k=0; _25k=0} \
