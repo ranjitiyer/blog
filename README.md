@@ -1,1 +1,1 @@
-# A collection of blogs
+# Blogs
